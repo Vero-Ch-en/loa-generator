@@ -175,3 +175,11 @@
     }
   }
 }
+body {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  background: #fbfbf8;
+}
+
+.font-serif {
+  font-family: "Fraunces", Georgia, serif;
+}

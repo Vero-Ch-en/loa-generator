@@ -1,0 +1,52 @@
+# Project TODO
+
+- [x] Add administrator controls to authorize colleagues and manage workspace roles.
+- [x] Support configurable shared versus project-specific fields and enforce required fields against template configuration on the server.
+- [x] Expose generation creator and audit events, and support uploaded and signed handoff status transitions.
+- [x] Add a Microsoft 365 SharePoint adapter interface that can accept credentials and enable direct upload later.
+- [x] Expand workflow tests to cover approval enforcement, field validation, and state transitions.
+
+- [x] Define LOA workspace domain model for projects, approved template versions, field definitions, LOA records, generated files, handoff state, and audit history.
+- [x] Configure role-aware authenticated access for the current owner and future authorized colleagues.
+- [x] Build an elegant internal dashboard with LOA activity, generation status, and clear next actions.
+- [x] Build project and approved template version management for four initial LOA variants and future projects.
+- [x] Support shared fields and project-specific fields in template configuration.
+- [x] Create a guided manual LOA form with project/template selection, required-field validation, and review-before-generation.
+- [x] Generate a completed DOCX from an approved template version while preserving template structure and formatting.
+- [x] Convert generated DOCX files into signing-ready PDFs without unintended layout changes.
+- [x] Store generated DOCX and PDF files in managed file storage and persist traceability metadata.
+- [x] Create generation history with creator, project, template version, timestamps, status, and links to outputs.
+- [x] Implement SharePoint-ready filename conventions, download handoff, and signing/storage status tracking.
+- [x] Prepare a direct SharePoint upload integration point for later Microsoft 365 authorization.
+- [x] Add unit tests for domain validation, approved-version enforcement, generation-state transitions, and filename composition.
+- [x] Verify critical workspace views at desktop and mobile sizes, resolve console/build errors, and create a delivery checkpoint.
+
+<!-- Earlier duplicate checklist entries created during initial scaffolding are retained below as completed history. -->
+- [x] Define LOA workspace domain model for projects, approved template versions, field definitions, LOA records, generated files, handoff state, and audit history.
+- [x] Configure role-aware authenticated access for the current owner and future authorized colleagues.
+- [x] Build an elegant internal dashboard with LOA activity, generation status, and clear next actions.
+- [x] Build project and approved template version management for four initial LOA variants and future projects.
+- [x] Support shared fields and project-specific fields in template configuration.
+- [x] Create a guided manual LOA form with project/template selection, required-field validation, and review-before-generation.
+- [x] Generate a completed DOCX from an approved template version while preserving template structure and formatting.
+- [x] Convert generated DOCX files into signing-ready PDFs without unintended layout changes.
+- [x] Store generated DOCX and PDF files in managed file storage and persist traceability metadata.
+- [x] Create generation history with creator, project, template version, timestamps, status, and links to outputs.
+- [x] Implement SharePoint-ready filename conventions, download handoff, and signing/storage status tracking.
+- [x] Prepare a direct SharePoint upload integration point for later Microsoft 365 authorization.
+- [x] Add unit tests for domain validation, approved-version enforcement, generation-state transitions, and filename composition.
+- [x] Verify critical workspace views at desktop and mobile sizes, resolve console/build errors, and create a delivery checkpoint.
+- [x] Define LOA workspace domain model for projects, approved template versions, field definitions, LOA records, generated files, handoff state, and audit history.
+- [x] Configure role-aware authenticated access for the current owner and future authorized colleagues.
+- [x] Build an elegant internal dashboard with LOA activity, generation status, and clear next actions.
+- [x] Build project and approved template version management for four initial LOA variants and future projects.
+- [x] Support shared fields and project-specific fields in template configuration.
+- [x] Create a guided manual LOA form with project/template selection, required-field validation, and review-before-generation.
+- [x] Generate a completed DOCX from an approved template version while preserving template structure and formatting.
+- [x] Convert generated DOCX files into signing-ready PDFs without unintended layout changes.
+- [x] Store generated DOCX and PDF files in managed file storage and persist traceability metadata.
+- [x] Create generation history with creator, project, template version, timestamps, status, and links to outputs.
+- [x] Implement SharePoint-ready filename conventions, download handoff, and signing/storage status tracking.
+- [x] Prepare a direct SharePoint upload integration point for later Microsoft 365 authorization.
+- [x] Add unit tests for domain validation, approved-version enforcement, generation-state transitions, and filename composition.
+- [x] Verify critical workspace views at desktop and mobile sizes, resolve console/build errors, and create a delivery checkpoint.

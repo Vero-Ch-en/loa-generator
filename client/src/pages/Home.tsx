@@ -1,33 +1,23 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { trpc } from "@/lib/trpc";
+import { ArrowRight, CheckCircle2, Clock3, FileText, FolderCog, ShieldCheck } from "lucide-react";
+import { useLocation } from "wouter";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
+const statusLabel: Record<string, string> = { in_review: "In review", generated: "Generated", handoff_ready: "Handoff ready", sent_to_sharepoint: "In SharePoint", failed: "Attention needed", draft: "Draft" };
+
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const [, setLocation] = useLocation();
+  const { data, isLoading } = trpc.workspace.overview.useQuery();
+  const records = data?.records ?? [];
+  const approved = (data?.templateVersions ?? []).filter(version => version.status === "approved");
+  const active = records.filter(record => ["in_review", "generated", "handoff_ready"].includes(record.status));
 
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
-    </div>
-  );
+  return <DashboardLayout><section className="mx-auto max-w-6xl"><div className="flex flex-col justify-between gap-6 border-b border-[#e0e6df] pb-8 md:flex-row md:items-end"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#5f7f68]">Document control</p><h1 className="mt-2 font-serif text-4xl tracking-tight text-[#193d37] sm:text-5xl">A measured path to every LOA.</h1><p className="mt-4 max-w-2xl text-sm leading-6 text-[#63716a]">Create from approved templates, confirm the details before generation, and retain a clear record of every signing handoff.</p></div><Button onClick={() => setLocation("/create")} className="h-11 bg-[#193d37] px-5 hover:bg-[#0f2c27]"><FileText className="mr-2 h-4 w-4" />Create LOA</Button></div>
+  <div className="mt-8 grid gap-4 sm:grid-cols-3"><Metric icon={FolderCog} label="Approved templates" value={isLoading ? "—" : String(approved.length)} detail="Only approved versions can generate" /><Metric icon={Clock3} label="Active LOAs" value={isLoading ? "—" : String(active.length)} detail="Review, generation, or handoff" /><Metric icon={ShieldCheck} label="Traceable outputs" value={isLoading ? "—" : String(records.filter(r => r.generatedPdfUrl).length)} detail="DOCX and signing-ready PDF" /></div>
+  {!isLoading && approved.length === 0 ? <div className="mt-7 rounded-2xl border border-[#d9e2db] bg-[#edf5ee] p-6 sm:flex sm:items-center sm:justify-between"><div><p className="font-serif text-xl font-semibold text-[#193d37]">Start with your approved template library.</p><p className="mt-1 max-w-xl text-sm text-[#567060]">Add each project, upload its approved DOCX version, and map the document fields before creating an LOA.</p></div><Button variant="outline" onClick={() => setLocation("/templates")} className="mt-4 border-[#8aa391] bg-white text-[#193d37] hover:bg-[#f7fbf7] sm:mt-0">Configure templates <ArrowRight className="ml-2 h-4 w-4" /></Button></div> : null}
+  <div className="mt-9 overflow-hidden rounded-2xl border border-[#e0e6df] bg-white shadow-[0_12px_40px_rgba(25,61,55,0.05)]"><div className="flex items-center justify-between border-b border-[#edf0ec] px-6 py-5"><div><h2 className="font-serif text-2xl font-semibold text-[#193d37]">Recent activity</h2><p className="mt-1 text-sm text-[#748078]">The latest LOAs available to you.</p></div><button onClick={() => setLocation("/history")} className="text-sm font-semibold text-[#285b4d] hover:text-[#193d37]">View history</button></div>{isLoading ? <div className="p-8 text-sm text-[#748078]">Loading workspace…</div> : records.length === 0 ? <div className="p-10 text-center"><CheckCircle2 className="mx-auto h-7 w-7 text-[#8aa391]" /><p className="mt-3 font-medium text-[#31453c]">No LOAs have been created yet.</p><p className="mt-1 text-sm text-[#78837c]">Your generated documents will appear here with their handoff status.</p></div> : <div className="divide-y divide-[#edf0ec]">{records.slice(0, 6).map(record => <button key={record.id} onClick={() => setLocation("/history")} className="flex w-full items-center gap-4 px-6 py-4 text-left transition-colors hover:bg-[#fafcf9]"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf5ee] text-[#2f6a55]"><FileText className="h-4 w-4" /></span><span className="min-w-0 flex-1"><span className="block truncate font-medium text-[#233a33]">{record.title}</span><span className="block truncate text-xs text-[#7a857e]">{record.referenceNumber} · {new Date(record.updatedAt).toLocaleDateString()}</span></span><StatusPill status={record.status} /></button>)}</div>}</div></section></DashboardLayout>;
 }
+
+function Metric({ icon: Icon, label, value, detail }: { icon: typeof FileText; label: string; value: string; detail: string }) { return <div className="rounded-2xl border border-[#e0e6df] bg-white p-5"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf5ee] text-[#2f6a55]"><Icon className="h-4 w-4" /></span><p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-[#809087]">{label}</p><p className="mt-1 font-serif text-3xl text-[#193d37]">{value}</p><p className="mt-1 text-xs text-[#7a857e]">{detail}</p></div>; }
+export function StatusPill({ status }: { status: string }) { const palette: Record<string, string> = { generated: "bg-[#eaf4ec] text-[#256345]", handoff_ready: "bg-[#eaf0f8] text-[#355b7d]", in_review: "bg-[#fbf3dd] text-[#806116]", failed: "bg-[#fae9e7] text-[#9b4037]" }; return <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${palette[status] || "bg-stone-100 text-stone-600"}`}>{statusLabel[status] || status}</span>; }
