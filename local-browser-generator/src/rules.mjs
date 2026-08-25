@@ -15,7 +15,7 @@ export function extractTemplateFields(fullText) {
 
 export function deriveWorkflowState({ generateLoa, sendForSignature }) {
   if (!generateLoa) return { folder: "Draft", loaGenerationStatus: "Awaiting generation", sentForSignature: "No", signatureStatus: "Not sent" };
-  if (sendForSignature) return { folder: "For-Signing", loaGenerationStatus: "Prepared for signature", sentForSignature: "Ready for BoldSign", signatureStatus: "Pending" };
+  if (sendForSignature) return { folder: "For-Signing", loaGenerationStatus: "Prepared for signature", sentForSignature: "Ready for OpenSign", signatureStatus: "Pending" };
   return { folder: "Draft", loaGenerationStatus: "Monthly Draft Generated", sentForSignature: "No", signatureStatus: "Not sent" };
 }
 

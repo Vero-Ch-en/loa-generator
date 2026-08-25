@@ -1,5 +1,9 @@
 # Project TODO
 
+- [x] Verify all OpenSign wording replaces BoldSign references and rebuild the portable Windows bundle after the signing-handoff update.
+
+- [x] Replace BoldSign-specific handoff wording and checklist steps with OpenSign instructions and terminology.
+
 - [x] Confirm the audit helper is exported, test regeneration audit retention, and rebuild the portable Windows bundle after the fix.
 
 - [x] Preserve prior audit events when regeneration is requested and add tests for the retained audit trail.
