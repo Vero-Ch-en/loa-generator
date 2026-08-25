@@ -1,5 +1,17 @@
 # Project TODO
 
+- [x] Verify the authorised-user review-data and duplicate normalized-key conflict tests run successfully.
+
+- [x] Add test coverage for authorised-user data included in the review step.
+- [x] Add server-level test coverage for duplicate normalized template field keys.
+
+- [x] Add authorised-user inputs for sign date, employee identity and contact, NRIC, job, salary, start date, contract, employment period, payment date, and remarks.
+- [x] Map consultant full name and email alongside the authorised-user template values.
+- [x] Add tests that verify the required authorised-user field mapping and review data.
+
+- [x] Normalize template field keys from common labels and merge-tag-style input before validation, with clear admin feedback.
+- [x] Add validation tests for field-key normalization and duplicate-key handling.
+
 - [x] Verify all OpenSign wording replaces BoldSign references and rebuild the portable Windows bundle after the signing-handoff update.
 
 - [x] Replace BoldSign-specific handoff wording and checklist steps with OpenSign instructions and terminology.

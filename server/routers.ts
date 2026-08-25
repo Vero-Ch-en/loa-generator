@@ -10,6 +10,9 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { storagePut } from "./storage";
+import { normalizeTemplateFieldKey } from "./templateFieldKey";
+import { assertTemplateFieldKeyIsAvailable } from "./templateFieldValidation";
+import { missingRequiredAuthorisedUserFields } from "../shared/authorisedUserLoaFields";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Administrator access is required." });
@@ -61,10 +64,14 @@ export const appRouter = router({
         return { success: true };
       }),
     addField: adminProcedure
-      .input(z.object({ templateId: z.string().uuid(), fieldKey: z.string().trim().regex(/^[a-z][a-z0-9_]*$/, "Use lowercase letters, numbers, and underscores."), label: z.string().trim().min(2).max(160), fieldScope: z.enum(["shared", "project"]), isRequired: z.boolean(), position: z.number().int().min(0).max(200) }))
+      .input(z.object({ templateId: z.string().uuid(), fieldKey: z.string().trim().min(1).max(160), label: z.string().trim().min(2).max(160), fieldScope: z.enum(["shared", "project"]), isRequired: z.boolean(), position: z.number().int().min(0).max(200) }))
       .mutation(async ({ input }) => {
-        await db.createTemplateField({ id: randomUUID(), ...input });
-        return { success: true };
+        const fieldKey = normalizeTemplateFieldKey(input.fieldKey);
+        if (!fieldKey) throw new TRPCError({ code: "BAD_REQUEST", message: "Enter a field name or a merge tag such as {{candidate_full_name}}." });
+        const existingFields = await db.getFieldsForTemplate(input.templateId);
+        assertTemplateFieldKeyIsAvailable(existingFields, fieldKey);
+        await db.createTemplateField({ id: randomUUID(), ...input, fieldKey });
+        return { success: true, fieldKey };
       }),
     uploadVersion: adminProcedure
       .input(z.object({ templateId: z.string().uuid(), version: z.string().trim().min(1).max(32), filename: z.string().trim().endsWith(".docx", "Upload a .docx template."), documentBase64: z.string().min(100) }))
@@ -95,6 +102,8 @@ export const appRouter = router({
         const approvedTemplate = await db.getTemplateForVersion(input.templateVersionId);
         if (!approvedTemplate || approvedTemplate.version.status !== "approved") throw new TRPCError({ code: "BAD_REQUEST", message: "Select an approved template version." });
         if (approvedTemplate.template.projectId !== input.projectId) throw new TRPCError({ code: "BAD_REQUEST", message: "The selected template does not belong to the selected project." });
+        const missingAuthorisedUserFields = missingRequiredAuthorisedUserFields(input.fieldData);
+        if (missingAuthorisedUserFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the authorised-user fields: ${missingAuthorisedUserFields.join(", ")}.` });
         const requiredFields = validateRequiredFields(await db.getFieldsForTemplate(approvedTemplate.template.id), input.fieldData);
         if (requiredFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the required document fields: ${requiredFields.join(", ")}.` });
         const id = randomUUID();
