@@ -1,5 +1,10 @@
 # Project TODO
 
+- [x] Resolve the title-helper import, verify editable default-title behavior, and run its test coverage.
+
+- [x] Default the editable LOA title to Employee Full Name_Employment Contract_Date_Time, with sensible missing-value fallbacks.
+- [x] Add tests for the default LOA title composition and manual override behavior.
+
 - [x] Verify the authorised-user review-data and duplicate normalized-key conflict tests run successfully.
 
 - [x] Add test coverage for authorised-user data included in the review step.
