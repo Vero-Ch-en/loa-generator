@@ -1,5 +1,13 @@
 # Project TODO
 
+- [x] Add a separate local review step before PDF generation and verify the form transitions through review to completion.
+- [ ] Verify the packaged Windows local consultant launcher against the default templates, output, and data folders after the simplification.
+
+- [x] Convert the simplified consultant workspace into a standalone local browser application with no login requirement.
+- [x] Preserve the consultant template-choice, fill-in, review, and signing-ready PDF flow in the local version.
+- [x] Provide simple local template administration and local history without hosted accounts or database access.
+- [x] Package and test the no-login Windows local consultant version with the default folders.
+
 - [x] Run and confirm the router-level LOA generation integration test returns the consultant PDF URL and filename.
 
 - [x] Add integration-level coverage for successful approved-template generation returning a PDF URL and transitioning the consultant flow to the completion screen.
