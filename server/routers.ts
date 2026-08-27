@@ -12,6 +12,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { storagePut } from "./storage";
 import { normalizeTemplateFieldKey } from "./templateFieldKey";
 import { assertTemplateFieldKeyIsAvailable } from "./templateFieldValidation";
+import { isConsultantTemplateAvailable } from "../shared/consultantFlow";
 import { missingRequiredAuthorisedUserFields } from "../shared/authorisedUserLoaFields";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -100,7 +101,7 @@ export const appRouter = router({
       .input(z.object({ projectId: z.string().uuid(), templateVersionId: z.string().uuid(), title: z.string().trim().min(2).max(200), referenceNumber: z.string().trim().min(2).max(100), fieldData: z.record(z.string(), z.string().max(2000)) }))
       .mutation(async ({ input, ctx }) => {
         const approvedTemplate = await db.getTemplateForVersion(input.templateVersionId);
-        if (!approvedTemplate || approvedTemplate.version.status !== "approved") throw new TRPCError({ code: "BAD_REQUEST", message: "Select an approved template version." });
+        if (!approvedTemplate || !isConsultantTemplateAvailable(approvedTemplate.version.status)) throw new TRPCError({ code: "BAD_REQUEST", message: "Select an approved template version." });
         if (approvedTemplate.template.projectId !== input.projectId) throw new TRPCError({ code: "BAD_REQUEST", message: "The selected template does not belong to the selected project." });
         const missingAuthorisedUserFields = missingRequiredAuthorisedUserFields(input.fieldData);
         if (missingAuthorisedUserFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the authorised-user fields: ${missingAuthorisedUserFields.join(", ")}.` });
@@ -145,7 +146,7 @@ export const appRouter = router({
           filename: baseFilename,
         });
         await db.addLoaEvent(input.id, ctx.user.id, "documents_generated", "Approved template rendered to DOCX and PDF.");
-        return { success: true };
+        return { success: true, pdfUrl: pdfStored.url, filename: `${baseFilename}.pdf` };
       } catch (error) {
         const message = error instanceof Error ? error.message : "Document generation failed.";
         await db.updateLoaRecord(input.id, { status: "failed", conversionStatus: "failed", errorMessage: message });

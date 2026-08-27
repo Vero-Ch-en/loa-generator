@@ -25,6 +25,7 @@ import { FileCheck2, FileText, FolderCog, LayoutDashboard, LogOut, PanelLeft, Sh
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
+import { getWorkspaceNavigation } from "@shared/consultantFlow";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Workspace", path: "/" },
@@ -55,7 +56,8 @@ function DashboardContent({ children, setSidebarWidth }: { children: React.React
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [resizing, setResizing] = useState(false);
   const initial = user?.name?.charAt(0).toUpperCase() || "U";
-  const visibleMenuItems = user?.role === "admin" ? menuItems : menuItems.filter(item => !["/templates", "/admin"].includes(item.path));
+  const visiblePaths = getWorkspaceNavigation(user?.role);
+  const visibleMenuItems = menuItems.filter(item => visiblePaths.includes(item.path));
 
   useEffect(() => {
     const move = (event: MouseEvent) => {

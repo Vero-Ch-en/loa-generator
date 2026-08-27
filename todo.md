@@ -1,5 +1,24 @@
 # Project TODO
 
+- [x] Run and confirm the router-level LOA generation integration test returns the consultant PDF URL and filename.
+
+- [x] Add integration-level coverage for successful approved-template generation returning a PDF URL and transitioning the consultant flow to the completion screen.
+
+- [x] Exercise a successful approved-template generation and verify the consultant sees the PDF completion and download state.
+
+- [x] Verify direct route redirects prevent consultants from accessing templates, roles, and history administration.
+- [x] Verify consultant template filtering and post-generation PDF completion state through the implemented workflow helpers and UI build.
+
+- [x] Add route-level administrator guards for templates, access roles, and history administration, while keeping the consultant workspace and creation form accessible.
+- [x] Add higher-level tests for consultant route access, approved-template-only selection, and PDF completion state.
+
+- [x] Simplify navigation and the landing screen around a consultant’s primary task: create an LOA.
+- [x] Present approved template selection as the first step in a focused consultant form.
+- [x] Show only the fields required by the selected template plus standard consultant inputs.
+- [x] Keep template upload, field mapping, access controls, and history administration restricted to administrators.
+- [x] Generate and present the signing-ready PDF as the consultant-facing completion outcome.
+- [x] Add tests for consultant access, approved-template selection, and PDF-only completion messaging.
+
 - [x] Resolve the title-helper import, verify editable default-title behavior, and run its test coverage.
 
 - [x] Default the editable LOA title to Employee Full Name_Employment Contract_Date_Time, with sensible missing-value fallbacks.
