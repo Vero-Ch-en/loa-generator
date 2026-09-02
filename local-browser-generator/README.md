@@ -23,3 +23,9 @@ Use double-brace merge tags in approved DOCX templates, for example `{{employee_
 | `data` | Local settings and generation history. |
 
 The **Folders** screen can point templates or outputs to another local folder, including a SharePoint-synced folder. No user login, hosted account, or cloud database is used by this local application.
+
+## Windows acceptance check
+
+The portable archive should contain `Local-LOA-Generator.exe`, `Start-LOA-Generator.bat`, `public`, and this README in one folder. On the target Windows computer, start the batch file, confirm the browser opens at `http://127.0.0.1:8787`, upload or place a DOCX in `templates`, and confirm it appears in **Template library**. Complete one LOA, use **Review details**, confirm the values, and generate the PDF. Verify that the PDF is created under `output/<project-code>/PDF`, that a matching entry appears under **Generated PDFs**, and that the PDF opens with the original Word layout. Finally, upload the PDF to OpenSign and follow the consultant-first, candidate-second signing order.
+
+The Linux development sandbox has verified archive integrity, fixture upload, template discovery, merge-tag rendering, review-confirmed generation routing, PDF output through an opt-in LibreOffice smoke converter, and local history recording. It cannot execute the Windows executable or Microsoft Word COM automation. The Microsoft Word rendering and portable-launcher checks must therefore be completed on a Windows computer with Word installed, using the acceptance sequence above.
