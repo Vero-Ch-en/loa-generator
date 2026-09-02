@@ -9,6 +9,14 @@ describe("authorised-user LOA field mapping", () => {
     ]);
   });
 
+  it("exposes exactly the requested 15 fields with no extra required consultant input", () => {
+    expect(AUTHORISED_USER_LOA_FIELDS).toHaveLength(15);
+    expect(AUTHORISED_USER_LOA_FIELDS.map(field => field.label)).toEqual([
+      "Date", "Employee Full Name", "Employee Email", "NRIC", "Phone Number", "Job Title", "Salary Type", "Salary Amount", "Start Date", "Contract", "Period of Employment", "Payment Date", "Remarks", "Consultant Full Name", "Consultant Email",
+    ]);
+    expect(AUTHORISED_USER_LOA_FIELDS.filter(field => !field.required).map(field => field.label)).toEqual(["Remarks"]);
+  });
+
   it("identifies missing required authorised-user values before generation", () => {
     const values = Object.fromEntries(AUTHORISED_USER_LOA_FIELDS.map(field => [field.key, field.required ? "Provided" : ""]));
     values.nric = "";

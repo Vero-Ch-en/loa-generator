@@ -131,3 +131,32 @@
 - [x] Prepare a direct SharePoint upload integration point for later Microsoft 365 authorization.
 - [x] Add unit tests for domain validation, approved-version enforcement, generation-state transitions, and filename composition.
 - [x] Verify critical workspace views at desktop and mobile sizes, resolve console/build errors, and create a delivery checkpoint.
+
+- [x] Reduce the consultant-facing form to exactly the requested 15 fields plus approved-template selection and editable automatic title.
+- [x] Derive internal project and reference metadata instead of asking consultants for extra inputs.
+- [x] Add tests that confirm the exact consultant field list and no extra required inputs.
+- [x] Validate the reduced form on the hosted workspace and refresh the no-login local version.
+- [x] Confirm the generated PDF completion outcome remains unchanged after the form reduction.
+- [ ] Run the portable Windows local consultant launcher with the default folders on the target computer.
+- [ ] Verify Windows Word PDF rendering against each approved LOA template on the target computer.
+- [ ] Verify the packaged Windows local consultant launcher against the default templates, output, and data folders after the simplification.
+- [ ] Run the portable Windows bundle with the default folders and verify startup, template discovery, local history, and Microsoft Word DOCX/PDF generation on the target computer.
+
+Completed verification history remains above; the repeated Windows checks are retained as separate historical checklist entries.
+
+- [x] Add explicit automated assertions that the consultant form exposes only the 15 requested fields plus template selection and editable title.
+- [x] Rebuild and smoke-test the no-login local consultant generator after the field reduction, including template selection, review, and PDF-generation request behavior.
+
+- [x] Add a rendered UI test asserting exactly the 15 requested fields, approved template selection, and editable LOA title are visible.
+- [x] Smoke-test the rebuilt local app through template selection, review transition, and a local `/api/generate` request using a sample template or controlled fixture.
+
+- [x] Configure DOCX rendering to support the documented double-brace merge tags and re-run the local generation-path smoke test with a valid fixture.
+- [x] Preserve compatibility guidance for templates using the approved merge-tag convention.
+
+- [x] Add a test that renders the real consultant form page and asserts only the 15 requested fields, approved-template selector, and editable LOA title are present.
+- [x] Exercise the local app workflow through actual template upload/selection, review transition, generation request, and history behavior.
+- [x] Document the supported `{{field_name}}` merge-tag convention and approved-template compatibility expectations in the local generator README and UI help.
+
+- [x] Add an end-to-end local-app smoke script covering template upload/selection, review transition, generation attempt, and local history behavior.
+- [x] Add in-app merge-tag and approved-template compatibility guidance on the local consultant/template screen.
+- [x] Capture evidence that the running local app records the history event after the generation attempt.

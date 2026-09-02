@@ -33,6 +33,7 @@ export function renderDocx(templateBuffer: Buffer, fieldData: Record<string, str
     const document = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
+      delimiters: { start: "{{", end: "}}" },
       nullGetter: () => "",
     });
     document.render(fieldData);

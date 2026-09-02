@@ -5,7 +5,7 @@ import { COOKIE_NAME } from "../shared/const";
 import { composeLoaFilename, convertDocxToPdf, loadApprovedTemplate, renderDocx } from "./documents";
 import * as db from "./db";
 import { isSharePointUploadConfigured, uploadPdfToSharePoint } from "./sharepoint";
-import { canGenerateFromRecord, canMarkSigned, canMarkUploaded, canPrepareHandoff, validateRequiredFields } from "./workflowRules";
+import { canGenerateFromRecord, canMarkSigned, canMarkUploaded, canPrepareHandoff } from "./workflowRules";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -105,8 +105,6 @@ export const appRouter = router({
         if (approvedTemplate.template.projectId !== input.projectId) throw new TRPCError({ code: "BAD_REQUEST", message: "The selected template does not belong to the selected project." });
         const missingAuthorisedUserFields = missingRequiredAuthorisedUserFields(input.fieldData);
         if (missingAuthorisedUserFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the authorised-user fields: ${missingAuthorisedUserFields.join(", ")}.` });
-        const requiredFields = validateRequiredFields(await db.getFieldsForTemplate(approvedTemplate.template.id), input.fieldData);
-        if (requiredFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the required document fields: ${requiredFields.join(", ")}.` });
         const id = randomUUID();
         await db.createLoaRecord({ id, ...input, createdById: ctx.user.id });
         await db.addLoaEvent(id, ctx.user.id, "review_started", "Draft created and awaiting review confirmation.");

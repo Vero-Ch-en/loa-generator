@@ -46,7 +46,13 @@ async function getHistory() { await ensureSetup(); return JSON.parse(await fs.re
 async function saveHistory(history) { await fs.writeFile(historyPath, JSON.stringify(history.slice(0, 500), null, 2)); }
 async function appendHistory(entry) { const history = await getHistory(); history.unshift(entry); await saveHistory(history); }
 async function convertWithWord(docxPath, pdfPath) {
-  if (process.platform !== "win32") throw new Error("Microsoft Word conversion runs on Windows. Copy this local generator to the target Windows computer to create PDFs.");
+  if (process.platform !== "win32") {
+    if (process.env.LOCAL_LOA_SMOKE_CONVERTER !== "libreoffice") throw new Error("Microsoft Word conversion runs on Windows. Copy this local generator to the target Windows computer to create PDFs.");
+    await execFileAsync("libreoffice", ["--headless", "--convert-to", "pdf", "--outdir", path.dirname(pdfPath), docxPath], { timeout: 120000 });
+    const convertedPath = path.join(path.dirname(pdfPath), `${path.basename(docxPath, ".docx")}.pdf`);
+    await fs.rename(convertedPath, pdfPath);
+    return;
+  }
   const script = ["$ErrorActionPreference = 'Stop'", "$word = New-Object -ComObject Word.Application", "$word.Visible = $false", "try {", `  $document = $word.Documents.Open('${docxPath.replace(/'/g, "''")}')`, `  $document.SaveAs([ref]'${pdfPath.replace(/'/g, "''")}', [ref]17)`, "  $document.Close()", "} finally {", "  $word.Quit()", "  [System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null", "}"].join("\n");
   await execFileAsync("powershell.exe", ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", script], { timeout: 120000 });
 }
@@ -67,7 +73,7 @@ async function generateLoa(input) {
   const temporaryDocxPath = path.join(workDirectory, `${randomUUID()}.docx`);
   const pdfPath = path.join(projectDirectory, `${filename}.pdf`);
   try {
-    const document = new Docxtemplater(new PizZip(await fs.readFile(path.join(config.templateDirectory, selected.filename))), { paragraphLoop: true, linebreaks: true, nullGetter: () => "" });
+    const document = new Docxtemplater(new PizZip(await fs.readFile(path.join(config.templateDirectory, selected.filename))), { paragraphLoop: true, linebreaks: true, delimiters: { start: "{{", end: "}}" }, nullGetter: () => "" });
     document.render(templateData({ ...input, title }, selected.fields));
     await fs.writeFile(temporaryDocxPath, document.getZip().generate({ type: "nodebuffer", compression: "DEFLATE" }));
     await convertWithWord(temporaryDocxPath, pdfPath);

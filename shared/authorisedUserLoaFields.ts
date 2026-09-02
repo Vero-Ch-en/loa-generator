@@ -7,7 +7,7 @@ export type AuthorisedUserLoaField = {
 };
 
 export const AUTHORISED_USER_LOA_FIELDS: AuthorisedUserLoaField[] = [
-  { key: "sign_date", label: "Sign Date", inputType: "date", required: false },
+  { key: "sign_date", label: "Date", inputType: "date", required: true },
   { key: "employee_full_name", label: "Employee Full Name", inputType: "text", required: true },
   { key: "employee_email", label: "Employee Email", inputType: "email", required: true },
   { key: "nric", label: "NRIC", inputType: "text", required: true },

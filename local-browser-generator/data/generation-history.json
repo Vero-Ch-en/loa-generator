@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "id": "681feaa6-8394-4dfe-8b9f-4bae5ee2751e",
+    "createdAt": "2026-09-02T04:56:13.395Z",
+    "updatedAt": "2026-09-02T04:56:13.395Z",
+    "employee": {
+      "signDate": "2026-09-02",
+      "fullName": "Smoke Employee",
+      "email": "smoke.employee@example.com",
+      "nric": "S0000000A",
+      "phone": "90000000",
+      "jobTitle": "Smoke Role",
+      "salaryType": "Monthly",
+      "salaryAmount": "1000",
+      "startDate": "2026-09-15",
+      "contract": "Fixed-term",
+      "employmentPeriod": "6 months",
+      "paymentDate": "2026-09-30",
+      "remarks": "Smoke test only"
+    },
+    "consultant": {
+      "fullName": "Smoke Consultant",
+      "email": "smoke.consultant@example.com"
+    },
+    "projectCode": "SMOKE",
+    "referenceNumber": "SMOKE-1788324971118",
+    "title": "Smoke Employee_Employment Contract_2026-09-02_12-00",
+    "template": "LOA-Smoke.docx",
+    "folder": "PDF",
+    "loaGenerationStatus": "PDF generated",
+    "signatureStatus": "Ready for signing",
+    "pdfPath": "/home/ubuntu/loa-generator/local-browser-generator/output/SMOKE/PDF/SMOKE_SMOKE-1788324971118_Smoke-Employee-Employment-Contract-2026-09-02-12-00.pdf",
+    "audit": [
+      {
+        "at": "2026-09-02T04:56:13.395Z",
+        "action": "PDF generated",
+        "detail": "Signing-ready PDF generated from approved local template LOA-Smoke.docx."
+      }
+    ]
+  }
+]

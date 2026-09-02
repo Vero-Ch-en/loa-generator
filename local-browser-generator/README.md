@@ -10,6 +10,10 @@ This is a **no-login local browser application** for consultants. It runs on a W
 4. In **Create LOA**, select the approved template, complete the consultant form, confirm the details, and generate the signing-ready PDF.
 5. The PDF is saved under `output/<project-code>/PDF`. Upload it to OpenSign when ready.
 
+## Approved template compatibility
+
+Use double-brace merge tags in approved DOCX templates, for example `{{employee_full_name}}`, `{{salary_amount}}`, or `{{payment_date}}`. The text inside the braces must match the template field key configured in the template library. Keep tags in ordinary text runs where possible; complex tags split across multiple Word runs may need to be retyped as one contiguous tag. The local renderer preserves the approved DOCX layout as closely as Microsoft Word permits during PDF export.
+
 ## Local folders
 
 | Folder | Purpose |
