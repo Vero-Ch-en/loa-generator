@@ -91,9 +91,14 @@ export async function createTemplate(input: { id: string; projectId: string; nam
   await db.insert(templates).values({ ...input, description: input.description || null });
 }
 
-export async function createTemplateField(input: { id: string; templateId: string; fieldKey: string; label: string; fieldScope: "shared" | "project"; isRequired: boolean; position: number }) {
+export async function createTemplateField(input: { id: string; templateId: string; fieldKey: string; formFieldKey?: string | null; label: string; fieldScope: "shared" | "project"; isRequired: boolean; position: number }) {
   const db = await requireDb();
   await db.insert(templateFields).values(input);
+}
+
+export async function updateTemplateFieldMapping(id: string, formFieldKey: string | null) {
+  const db = await requireDb();
+  await db.update(templateFields).set({ formFieldKey }).where(eq(templateFields.id, id));
 }
 
 export async function createTemplateVersion(input: { id: string; templateId: string; version: string; sourceFilename: string; docxStorageKey: string; docxUrl: string; uploadedById: number }) {

@@ -5,6 +5,7 @@ vi.mock("./db", () => ({
   getLoaRecord: vi.fn(),
   getTemplateVersion: vi.fn(),
   getWorkspaceOverview: vi.fn(),
+  getFieldsForTemplate: vi.fn(),
   updateLoaRecord: vi.fn(),
   addLoaEvent: vi.fn(),
 }));
@@ -21,6 +22,7 @@ vi.mock("./storage", () => ({
 import * as db from "./db";
 import { appRouter } from "./routers";
 import { storagePut } from "./storage";
+import { renderDocx } from "./documents";
 
 const recordId = "00000000-0000-4000-8000-000000000001";
 const templateVersionId = "00000000-0000-4000-8000-000000000002";
@@ -50,6 +52,7 @@ describe("LOA generation completion response", () => {
     } as Awaited<ReturnType<typeof db.getLoaRecord>>);
     vi.mocked(db.getTemplateVersion).mockResolvedValue({ status: "approved", docxStorageKey: "templates/approved.docx" } as Awaited<ReturnType<typeof db.getTemplateVersion>>);
     vi.mocked(db.getWorkspaceOverview).mockResolvedValue({ projects: [{ id: projectId, code: "VERONICA" }] } as Awaited<ReturnType<typeof db.getWorkspaceOverview>>);
+    vi.mocked(db.getFieldsForTemplate).mockResolvedValue([{ fieldKey: "candidate_name", formFieldKey: "employee_full_name" }] as Awaited<ReturnType<typeof db.getFieldsForTemplate>>);
     vi.mocked(storagePut)
       .mockResolvedValueOnce({ key: "generated/loa.docx", url: "https://files.example.com/loa.docx" })
       .mockResolvedValueOnce({ key: "generated/loa.pdf", url: "https://files.example.com/loa.pdf" });
@@ -64,5 +67,10 @@ describe("LOA generation completion response", () => {
       filename: "VERONICA_Employment-Contract_2026-08-27_08-50.pdf",
     });
     expect(db.updateLoaRecord).toHaveBeenCalledWith(recordId, expect.objectContaining({ generatedPdfUrl: "https://files.example.com/loa.pdf", conversionStatus: "completed" }));
+  });
+
+  it("resolves mapped document tags before rendering the DOCX", async () => {
+    await createCaller().loas.generate({ id: recordId });
+    expect(renderDocx).toHaveBeenCalledWith(expect.any(Buffer), expect.objectContaining({ candidate_name: "Veronica Chen" }));
   });
 });

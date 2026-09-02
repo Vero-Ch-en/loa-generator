@@ -14,6 +14,7 @@ import { normalizeTemplateFieldKey } from "./templateFieldKey";
 import { assertTemplateFieldKeyIsAvailable } from "./templateFieldValidation";
 import { isConsultantTemplateAvailable } from "../shared/consultantFlow";
 import { missingRequiredAuthorisedUserFields } from "../shared/authorisedUserLoaFields";
+import { normalizeMappingTarget, resolveTemplateFieldData } from "../shared/templateMapping";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Administrator access is required." });
@@ -65,14 +66,24 @@ export const appRouter = router({
         return { success: true };
       }),
     addField: adminProcedure
-      .input(z.object({ templateId: z.string().uuid(), fieldKey: z.string().trim().min(1).max(160), label: z.string().trim().min(2).max(160), fieldScope: z.enum(["shared", "project"]), isRequired: z.boolean(), position: z.number().int().min(0).max(200) }))
+      .input(z.object({ templateId: z.string().uuid(), fieldKey: z.string().trim().min(1).max(160), formFieldKey: z.string().trim().max(80).optional(), label: z.string().trim().min(2).max(160), fieldScope: z.enum(["shared", "project"]), isRequired: z.boolean(), position: z.number().int().min(0).max(200) }))
       .mutation(async ({ input }) => {
         const fieldKey = normalizeTemplateFieldKey(input.fieldKey);
+        const formFieldKey = normalizeMappingTarget(input.formFieldKey);
+        if (input.formFieldKey && !formFieldKey) throw new TRPCError({ code: "BAD_REQUEST", message: "Map the document tag to one of the fixed LOA form fields." });
         if (!fieldKey) throw new TRPCError({ code: "BAD_REQUEST", message: "Enter a field name or a merge tag such as {{candidate_full_name}}." });
         const existingFields = await db.getFieldsForTemplate(input.templateId);
         assertTemplateFieldKeyIsAvailable(existingFields, fieldKey);
-        await db.createTemplateField({ id: randomUUID(), ...input, fieldKey });
+        await db.createTemplateField({ id: randomUUID(), ...input, fieldKey, formFieldKey: formFieldKey || null });
         return { success: true, fieldKey };
+      }),
+    mapField: adminProcedure
+      .input(z.object({ fieldId: z.string().uuid(), formFieldKey: z.string().trim().max(80).nullable() }))
+      .mutation(async ({ input }) => {
+        const formFieldKey = normalizeMappingTarget(input.formFieldKey);
+        if (input.formFieldKey && !formFieldKey) throw new TRPCError({ code: "BAD_REQUEST", message: "Map the document tag to one of the fixed LOA form fields." });
+        await db.updateTemplateFieldMapping(input.fieldId, formFieldKey || null);
+        return { success: true, formFieldKey: formFieldKey || null };
       }),
     uploadVersion: adminProcedure
       .input(z.object({ templateId: z.string().uuid(), version: z.string().trim().min(1).max(32), filename: z.string().trim().endsWith(".docx", "Upload a .docx template."), documentBase64: z.string().min(100) }))
@@ -105,6 +116,9 @@ export const appRouter = router({
         if (approvedTemplate.template.projectId !== input.projectId) throw new TRPCError({ code: "BAD_REQUEST", message: "The selected template does not belong to the selected project." });
         const missingAuthorisedUserFields = missingRequiredAuthorisedUserFields(input.fieldData);
         if (missingAuthorisedUserFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the authorised-user fields: ${missingAuthorisedUserFields.join(", ")}.` });
+        const templateFields = await db.getFieldsForTemplate(approvedTemplate.template.id);
+        const missingTemplateFields = templateFields.filter(field => !field.formFieldKey && field.isRequired && !input.fieldData[field.fieldKey]?.trim()).map(field => field.label);
+        if (missingTemplateFields.length) throw new TRPCError({ code: "BAD_REQUEST", message: `Complete the selected template fields: ${missingTemplateFields.join(", ")}.` });
         const id = randomUUID();
         await db.createLoaRecord({ id, ...input, createdById: ctx.user.id });
         await db.addLoaEvent(id, ctx.user.id, "review_started", "Draft created and awaiting review confirmation.");
@@ -129,7 +143,9 @@ export const appRouter = router({
       try {
         await db.updateLoaRecord(input.id, { conversionStatus: "in_progress", errorMessage: null });
         const templateBuffer = await loadApprovedTemplate(version.docxStorageKey);
-        const docxBuffer = renderDocx(templateBuffer, record.fieldData);
+        const templateFields = await db.getFieldsForTemplate(version.templateId);
+        const mappedFieldData = resolveTemplateFieldData(record.fieldData, templateFields);
+        const docxBuffer = renderDocx(templateBuffer, mappedFieldData);
         const docxStored = await storagePut(`loa/generated/${project.code}/${baseFilename}.docx`, docxBuffer, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
         const pdfBuffer = await convertDocxToPdf(docxBuffer, baseFilename);
         const pdfStored = await storagePut(`loa/generated/${project.code}/${baseFilename}.pdf`, pdfBuffer, "application/pdf");

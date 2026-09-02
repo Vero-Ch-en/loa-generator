@@ -54,6 +54,7 @@ export const templateFields = mysqlTable(
     id: varchar("id", { length: 36 }).primaryKey(),
     templateId: varchar("templateId", { length: 36 }).notNull(),
     fieldKey: varchar("fieldKey", { length: 80 }).notNull(),
+    formFieldKey: varchar("formFieldKey", { length: 80 }),
     label: varchar("label", { length: 160 }).notNull(),
     fieldScope: mysqlEnum("fieldScope", ["shared", "project"]).default("project").notNull(),
     isRequired: boolean("isRequired").default(false).notNull(),

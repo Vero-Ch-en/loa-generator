@@ -1,0 +1,1 @@
+ALTER TABLE `templateFields` ADD `formFieldKey` varchar(80);

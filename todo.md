@@ -160,3 +160,9 @@ Completed verification history remains above; the repeated Windows checks are re
 - [x] Add an end-to-end local-app smoke script covering template upload/selection, review transition, generation attempt, and local history behavior.
 - [x] Add in-app merge-tag and approved-template compatibility guidance on the local consultant/template screen.
 - [x] Capture evidence that the running local app records the history event after the generation attempt.
+
+- [x] Document and support the GitHub-connected hosted LOA workflow as the primary experience instead of requiring the portable local launcher.
+- [x] Add persistent per-template field mappings from DOCX merge tags to the fixed LOA form fields.
+- [x] Add mapping management UI for approved templates, including validation and clear unmapped-field warnings.
+- [x] Resolve mapped fields during generation and review so different project templates can use different tag names safely.
+- [x] Add automated tests and documentation for template mapping, hosted deployment behavior, and mapped PDF generation.
