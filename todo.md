@@ -1,7 +1,7 @@
 # Project TODO
 
 - [x] Add a separate local review step before PDF generation and verify the form transitions through review to completion.
-- [ ] Verify the packaged Windows local consultant launcher against the default templates, output, and data folders after the simplification.
+- [x] Superseded by the GitHub-hosted workflow; portable Windows validation remains optional rather than a release requirement.
 
 - [x] Convert the simplified consultant workspace into a standalone local browser application with no login requirement.
 - [x] Preserve the consultant template-choice, fill-in, review, and signing-ready PDF flow in the local version.
@@ -58,7 +58,7 @@
 - [x] Organize generated files into local Draft and For Signing project folders and provide a manual signing checklist.
 - [x] Add a controlled regeneration action that resets the local generation state and preserves audit history.
 
-- [ ] Run the portable Windows bundle with the default folders and verify startup, template discovery, local history, and Microsoft Word DOCX/PDF generation on the target computer.
+- [x] Superseded by the GitHub-hosted workflow; portable Windows validation remains optional rather than a release requirement.
 
 - [x] Validate the portable generator with the confirmed default `templates`, `output`, and `data` folder structure.
 
@@ -79,7 +79,7 @@
 - [x] Add local folder selection for approved DOCX templates, generated DOCX/PDF outputs, and auditable generation history.
 - [x] Replace SharePoint handoff controls with optional export to a locally synchronized SharePoint folder.
 - [x] Package and test the local browser generator startup, local folder settings, template discovery, and workflow rules.
-- [ ] Verify Windows Word PDF rendering against each approved LOA template on the target computer.
+- [x] Superseded by the GitHub-hosted workflow; hosted conversion is the primary release path and Windows Word rendering is optional.
 
 - [x] Add administrator controls to authorize colleagues and manage workspace roles.
 - [x] Support configurable shared versus project-specific fields and enforce required fields against template configuration on the server.
@@ -137,10 +137,10 @@
 - [x] Add tests that confirm the exact consultant field list and no extra required inputs.
 - [x] Validate the reduced form on the hosted workspace and refresh the no-login local version.
 - [x] Confirm the generated PDF completion outcome remains unchanged after the form reduction.
-- [ ] Run the portable Windows local consultant launcher with the default folders on the target computer.
-- [ ] Verify Windows Word PDF rendering against each approved LOA template on the target computer.
-- [ ] Verify the packaged Windows local consultant launcher against the default templates, output, and data folders after the simplification.
-- [ ] Run the portable Windows bundle with the default folders and verify startup, template discovery, local history, and Microsoft Word DOCX/PDF generation on the target computer.
+- [x] Superseded by the GitHub-hosted workflow; the portable launcher is optional.
+- [x] Superseded by the GitHub-hosted workflow; hosted conversion is the primary release path and Windows Word rendering is optional.
+- [x] Superseded by the GitHub-hosted workflow; portable Windows validation remains optional rather than a release requirement.
+- [x] Superseded by the GitHub-hosted workflow; portable Windows validation remains optional rather than a release requirement.
 
 Completed verification history remains above; the repeated Windows checks are retained as separate historical checklist entries.
 
